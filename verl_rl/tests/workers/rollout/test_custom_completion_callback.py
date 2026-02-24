@@ -87,7 +87,7 @@ class Sandbox:
         finally:
             try:
                 os.unlink(temp_file)
-            except:  # noqa: E722
+            except Exception:  # noqa: E722
                 pass
 
     async def _start_fastapi_server(self):

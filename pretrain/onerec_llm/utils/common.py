@@ -20,7 +20,7 @@ from transformers import set_seed as set_transformers_seed
 def print_rank_n(*msg, rank=0):
     try:
         _rank = dist.get_rank()
-    except:
+    except Exception:
         _rank = 0
     if _rank == rank:
         print(*msg)

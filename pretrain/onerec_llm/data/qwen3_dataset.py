@@ -341,8 +341,8 @@ class Qwen3ChatCompletionDataset(IterableDataset):
         )
         
         # Add EOS token
-        segments_text += self.tokenizer.pad_token
-        
+        text += self.tokenizer.pad_token
+
         # Tokenize
         inputs = self.tokenizer(
             text,

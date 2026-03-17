@@ -46,7 +46,7 @@ class Qwen3ChatCompletionDataset(IterableDataset):
 
         try:
             model_config = AutoConfig.from_pretrained(self.kwargs.base_model_dir)
-        except:
+        except Exception:
             model_config = Qwen3Config.from_pretrained(self.kwargs.base_model_dir)
 
         self.pad_token_id = model_config.pad_token_id
@@ -503,14 +503,14 @@ class Qwen3ChatCompletionDataset(IterableDataset):
 
                 try:
                     source_name = sample["json"]["source"]
-                except:
+                except Exception:
                     source_name = "None"
 
                 self.source_sample_cnt.setdefault(source_name, 0)
                 self.source_sample_cnt[source_name] += 1
             
                 inputs = self._process(sample, source_name)
-            except:
+            except Exception:
                 self.source_error_cnt.setdefault(source_name, 0)
                 self.source_error_cnt[source_name] += 1
                 error_ratio = self.source_error_cnt[source_name] * 1.0 / \

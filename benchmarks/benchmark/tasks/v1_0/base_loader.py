@@ -292,7 +292,7 @@ class BaseLoader(ABC):
             if isinstance(messages, str):
                 try:
                     messages = json.loads(messages)
-                except:
+                except Exception:
                     console.print(f"Sample {sample_id}: failed to parse messages, skipping")
                     continue
 
@@ -317,7 +317,7 @@ class BaseLoader(ABC):
             if isinstance(metadata_raw, str):
                 try:
                     metadata_dict = json.loads(metadata_raw)
-                except:
+                except Exception:
                     console.print(f"Sample {sample_id}: failed to parse metadata, skipping")
                     continue
             elif isinstance(metadata_raw, dict):

@@ -666,7 +666,7 @@ class RayMixin:
                     "  ✓ Ray connected to existing cluster (auto-detected)",
                     style=success_style,
                 )
-            except:
+            except Exception:
                 # Fallback to local mode
                 console.print(
                     "  [yellow]No existing cluster found, initializing local mode...[/yellow]",

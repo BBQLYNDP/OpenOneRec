@@ -154,7 +154,7 @@ def _load_parquet_from_hdfs(
             print(f"Warning: Cached file {cache_path} is corrupted, removing: {e}")
             try:
                 os.remove(cache_path)
-            except:
+            except Exception:
                 pass
     
     # Download from HDFS with retry

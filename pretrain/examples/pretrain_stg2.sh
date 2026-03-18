@@ -86,6 +86,7 @@ mpirun --allow-run-as-root \
         --learning_rate 2e-4 \
         --min_lr 1e-4 \
         --weight_decay 0.1 \
+        --max_grad_norm 1.0 \
         --lr_scheduler_type cosine \
         --num_warmup_steps 500 \
         --num_training_steps 5000 \

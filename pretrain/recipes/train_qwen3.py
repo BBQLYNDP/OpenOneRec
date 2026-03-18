@@ -43,6 +43,7 @@ from onerec_llm.training.common import set_default_dtype
 from onerec_llm.training.gradients import (
     EmbeddingGradientMasker,
     clip_grad_by_value,
+    clip_grad_norm,
     compute_fsdp_zero2_grad_norm,
 )
 from onerec_llm.training.distributed import (
@@ -265,8 +266,10 @@ def get_argument_parser() -> argparse.ArgumentParser:
     # Training arguments
     parser.add_argument("--use_tie_weights", action="store_true",
                        help="Tie embedding and lm_head weights")
-    parser.add_argument("--clip_range", type=float, default=None,
-                       help="Gradient clipping range")
+    # parser.add_argument("--clip_range", type=float, default=None,
+    #                    help="Gradient clipping range")
+    parser.add_argument("--max_grad_norm", type=float, default=1.0,
+                       help="Max gradient norm (global L2); set to 0 to disable")
     parser.add_argument("--freeze_llm", action="store_true",
                        help="Freeze all LLM parameters")
     parser.add_argument("--enable_gradient_checkpointing", action="store_true",
@@ -652,8 +655,16 @@ def load_checkpoint(
     
     if args.resume_from_tag:
         ckpt_path = os.path.join(args.resume_from, args.resume_from_tag)
-        global_step = int(args.resume_from_tag.split("step")[-1])
-        print_rank_0(f"Resume from checkpoint: {ckpt_path}, global_step={global_step}")
+        if args.resume_training_state:
+            global_step = int(args.resume_from_tag.split("step")[-1])
+            print_rank_0(
+                f"Resume from checkpoint: {ckpt_path}, global_step={global_step}"
+            )
+        else:
+            print_rank_0(
+                f"Resume model weights only from checkpoint: {ckpt_path}, "
+                "global_step stays at 0"
+            )
         
         # Load model checkpoint
         load_model_checkpoint(args, app_state, dist_checkpointer, converter)
@@ -739,7 +750,9 @@ def compute_forward_backward(
         if args.start_optimize_embedding_index > 0 and embedding_masker is not None:
             embedding_masker.apply_gradient_mask(optimizer)
         
-        clip_grad_by_value(model, args.clip_range)
+        # clip_grad_by_value(model, args.clip_range)
+        if args.max_grad_norm and args.max_grad_norm > 0:
+            clip_grad_norm(model, args.max_grad_norm)
     
     return loss, per_token_loss
 

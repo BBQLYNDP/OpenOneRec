@@ -26,6 +26,20 @@ def clip_grad_by_value(
         torch.nn.utils.clip_grad_value_(model.parameters(), clip_range)
 
 
+def clip_grad_norm(
+    model: torch.nn.Module,
+    max_grad_norm: Optional[float] = None
+) -> None:
+    """Clip gradients by global L2 norm.
+    
+    Args:
+        model: The model whose gradients will be clipped.
+        max_grad_norm: Maximum allowed L2 norm. If None, no clipping.
+    """
+    if max_grad_norm is not None:
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
+
+
 def compute_fsdp_zero2_grad_norm(
     model: torch.nn.Module, 
     ignore_unused_parameters: bool = True

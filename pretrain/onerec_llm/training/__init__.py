@@ -47,6 +47,7 @@ __all__ = [
     # Gradients
     "EmbeddingGradientMasker",
     "clip_grad_by_value",
+    "clip_grad_norm",
     "compute_fsdp_zero2_grad_norm",
     # LR Schedulers
     "get_cosine_scheduler",
